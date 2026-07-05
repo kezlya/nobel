@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nobel — Idea Graph</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; font: 14px system-ui, sans-serif; }
+    header { padding: 12px 16px; border-bottom: 1px solid #8883; }
+    #graph { width: 100vw; height: calc(100vh - 50px); display: block; }
+    .hint { opacity: .6; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Nobel</strong> — idea maturity graph
+    <span class="hint">· nodes colored by stage · size by backlink count</span>
+  </header>
+  <svg id="graph"></svg>
+
+  <!--
+    SKELETON: this is a placeholder graph view. It expects a d3-force bundle to
+    be served locally (Stage 3 wires the real frontend build). The fetch below
+    targets the /api/graph endpoint already implemented by the Go server.
+  -->
+  <script>
+    const STAGE_COLORS = {
+      draft: "#9ca3af", hypothesis: "#3b82f6", experiment_design: "#8b5cf6",
+      experiment_log: "#f59e0b", writeup: "#10b981", validated: "#059669",
+      invalidated: "#ef4444", archived: "#6b7280",
+    };
+
+    async function load() {
+      try {
+        const res = await fetch("/api/graph");
+        const { nodes, edges } = await res.json();
+        render(nodes || [], edges || []);
+      } catch (e) {
+        document.querySelector("header").insertAdjacentHTML(
+          "beforeend",
+          ` <span class="hint">(could not reach /api/graph — start the Go server)</span>`
+        );
+      }
+    }
+
+    // render() is intentionally a stub: Stage 3 replaces it with a d3-force
+    // simulation (see docs/PLAN.md). It currently just logs the payload shape.
+    function render(nodes, edges) {
+      console.log(`graph: ${nodes.length} nodes, ${edges.length} edges`, { STAGE_COLORS });
+      // TODO(stage-3): d3.forceSimulation(nodes) with forceLink(edges),
+      // color by node.stage, radius by backlink count, filter-by-stage UI.
+    }
+
+    load();
+  </script>
+</body>
+</html>

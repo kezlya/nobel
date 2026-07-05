@@ -1,0 +1,25 @@
+# Binaries
+/bin/
+*.exe
+*.out
+
+# Go
+/vendor/
+*.test
+coverage.out
+
+# Env / secrets
+.env
+.env.local
+*.pem
+service-account*.json
+
+# Node / frontend
+web/node_modules/
+web/dist/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
